@@ -17,7 +17,7 @@ def parse_card_details_from(card_details_text):
 
 
 class EmailParser:
-    
+
     def get_unseen_email(self):
         email_body = None
         mail = imaplib.IMAP4_SSL('imap.gmail.com')
