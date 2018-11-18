@@ -3,7 +3,7 @@ import imaplib
 import email
 import re
 
-from Card import Card
+from application.models import Card
 from Topup import Topup
 
 
@@ -52,18 +52,37 @@ class EmailParser:
         email_body = self.get_unseen_email()
         if email_body is not None:
             price = None
+            customer_name = None
+            school_name = None
             for line in email_body.splitlines():
                 topup = Topup(None, None, None)
                 if 'Price:' in line:
-                    text, amount = line.split(":")
-                    price = amount.partition("$")[2]
+                    price = self.getprice(line)
+                elif 'Customer Name' in line:
+                    customer_name = self.getcustomername(line)
+                elif 'The following item has just been purchased from' in line:
+                    school_name = self.getschoolname(line)
                 elif 'Note:' in line:
                     card_num, expiry_date = parse_card_details_from(line)
-                    card = Card(card_num, expiry_date, price)
-                    topup.card = card
+                    topup.card_num = card_num
                     topup.amount = price
+                    topup.customer_name = customer_name
+                    topup.school_name = school_name
+                    topup.card_expiry_date = expiry_date
                     valid_topups.append(topup)
         return valid_topups
+
+    def getprice(self, line):
+        text, amount = line.split(":")
+        return amount.partition("$")[2]
+
+    def getcustomername(self, line):
+        text, user_name = line.split(":")
+        return user_name
+
+    def getschoolname(self, line):
+        schoolname = line.partition('The following item has just been purchased from')[2]
+        return schoolname
 
 
 if __name__ == '__main__':
@@ -75,6 +94,8 @@ if __name__ == '__main__':
     for x in range(len(topups)):
         topup = topups[x]
         print('----------------------')
-        print('CardNum ' + topup.card.number)
-        print('Expiry Date ' + topup.card.expiry_date)
+        print('CardNum ' + topup.card_num)
+        print('Expiry Date ' + topup.card_expiry_date)
         print('Amount ' + topup.amount)
+        print('School ' + topup.school_name)
+        print('customer_name ' + topup.customer_name)
