@@ -6,6 +6,9 @@
 
 # Uncomment the line below if you want to work with a local DB
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootmysql@localhost/test_maggy_db'
+#SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin_702:charopy_2911@charopy.c2lu86pygjva.us-east-2.rds.amazonaws.com:3306/charopydb'
+
+
 
 SQLALCHEMY_POOL_RECYCLE = 3600
 

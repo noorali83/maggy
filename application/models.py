@@ -1,6 +1,9 @@
 from datetime import datetime
+from flask_marshmallow import Marshmallow
 
-from application import db
+from application import application, db
+
+ma = Marshmallow(application)
 
 
 class Transaction(db.Model):
@@ -11,6 +14,11 @@ class Transaction(db.Model):
     status = db.Column(db.String(10), unique=False)
     type = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Numeric(10, 2), default=0.00)
+
+
+class TransactionSchema(ma.ModelSchema):
+    class Meta:
+        model = Transaction
 
 
 class Card(db.Model):
@@ -39,6 +47,11 @@ class Card(db.Model):
         self.balance = self.balance - purchase_amount
 
 
+class CardSchema(ma.ModelSchema):
+    class Meta:
+        model = Card
+
+
 class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), index=True, unique=False)
@@ -56,3 +69,8 @@ class User(db.Model):
     status = db.Column(db.String(10), unique=False)
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
     cards = db.relationship('Card', backref='owner')
+
+
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        model = User
