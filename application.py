@@ -19,7 +19,7 @@ def checkout():
 
     if card is not None:
         if card.balance >= amount_in_decimal:
-            card.balance = card.balance - amount
+            card.balance = card.balance - amount_in_decimal
             db.session.commit()
             status = 'Approved'
         else:
@@ -46,4 +46,4 @@ def cards():
 
 
 if __name__ == '__main__':
-    application.run(host='localhost', port=5001, debug=True)
+    application.run(host='charopy-local', port=5001, debug=True)

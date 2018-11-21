@@ -37,9 +37,9 @@ db.session.add(akul)
 db.session.commit()
 
 # create cards
-card1 = Card(number='5555444433332222', expiry_date='1219',owner_id=muhammad_ali.id)
-card2 = Card(number='5555444433331111', expiry_date='1219',owner_id=dwij.id)
-card3 = Card(number='5555444433330000', expiry_date='1219',owner_id=akul.id)
+card1 = Card(number='5555444433332222', expiry_date='1219', balance=1000.00, owner_id=muhammad_ali.id)
+card2 = Card(number='5555444433331111', expiry_date='1219', balance=1000.00, owner_id=dwij.id)
+card3 = Card(number='5555444433330000', expiry_date='1219', balance=10.00, owner_id=akul.id)
 db.session.add(card1)
 db.session.add(card2)
 db.session.add(card3)
