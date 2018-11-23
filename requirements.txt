@@ -34,6 +34,7 @@ python-dateutil==2.7.5
 PyYAML==3.13
 requests==2.20.0
 semantic-version==2.5.0
+simplejson==3.16.0
 six==1.11.0
 SQLAlchemy==1.2.14
 termcolor==1.1.0

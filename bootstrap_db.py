@@ -19,9 +19,9 @@ db.session.add(toongabie_school)
 
 
 # create users and associate schools
-muhammad_ali = User(name='Muhammad Ali', school=darcy_road_school)
-akul = User(name='Akul', school=darcy_road_school)
-dwij = User(name='Dwij', school=westmead_school)
+muhammad_ali = User(name='Muhammad Ali', school=darcy_road_school, balance = 1000.00)
+akul = User(name='Akul', school=darcy_road_school, balance = 900.75)
+dwij = User(name='Dwij', school=westmead_school, balance = 1005.50)
 
 db.session.add(muhammad_ali)
 db.session.add(akul)
@@ -37,12 +37,11 @@ db.session.add(akul)
 db.session.commit()
 
 # create cards
-card1 = Card(number='5555444433332222', expiry_date='1219', balance=1000.00, owner_id=muhammad_ali.id)
-card2 = Card(number='5555444433331111', expiry_date='1219', balance=1000.00, owner_id=dwij.id)
-card3 = Card(number='5555444433330000', expiry_date='1219', balance=10.00, owner_id=akul.id)
-db.session.add(card1)
-db.session.add(card2)
-db.session.add(card3)
+card1 = Card(number='5555444433332222', expiry_date='1219', owner_id=muhammad_ali.id)
+card2 = Card(number='5555444433331111', expiry_date='1219', owner_id=dwij.id)
+card3 = Card(number='5555444433330000', expiry_date='1219', owner_id=akul.id)
+card4 = Card(number='555544443333333', expiry_date='1219', owner_id=muhammad_ali.id)
+db.session.add_all([card1, card2, card3, card4])
 db.session.commit()
 
 add_balance_transaction_1=Transaction(card_num=card1.number, type='ADD_BALANCE', amount=500.00, status='APPROVED')

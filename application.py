@@ -3,6 +3,7 @@ from decimal import Decimal
 from application import db, application
 from application.models import Card, User, UserSchema, School, CardSchema
 from flask import request, jsonify
+import simplejson as json
 
 
 @application.route('/api/checkout', methods=['POST'])
