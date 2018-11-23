@@ -18,7 +18,7 @@ class Transaction(db.Model):
 
 class TransactionSchema(ma.ModelSchema):
     class Meta:
-        model = Transaction
+        fields = ('id', 'card_num', 'created_date', 'status', 'type', 'amount')
 
 
 class Card(db.Model):

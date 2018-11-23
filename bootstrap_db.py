@@ -49,9 +49,9 @@ add_balance_transaction_2=Transaction(card_num=card2.number, type='ADD_BALANCE',
 add_balance_transaction_3=Transaction(card_num=card3.number, type='ADD_BALANCE', amount=50.50, status='APPROVED')
 check_balance_transaction=Transaction(card_num=card3.number, type='CHECK_BALANCE', status='APPROVED')
 
-db.session.add(add_balance_transaction_1)
-db.session.add(add_balance_transaction_2)
-db.session.add(add_balance_transaction_3)
-db.session.add(check_balance_transaction)
-db.session.commit()
+#db.session.add(add_balance_transaction_1)
+#db.session.add(add_balance_transaction_2)
+#db.session.add(add_balance_transaction_3)
+#db.session.add(check_balance_transaction)
+#db.session.commit()
 
