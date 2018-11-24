@@ -1,7 +1,8 @@
 from decimal import Decimal
 
 from application import db, application
-from application.models import Card, User, UserSchema, School, CardSchema, Transaction, TransactionSchema
+from application.models import Card, User, UserSchema, School, CardSchema, Transaction, TransactionSchema, SchoolSchema, \
+    SchoolSchemaLite
 from flask import request, jsonify
 import simplejson as json
 
@@ -55,11 +56,25 @@ def cards():
     cards = CardSchema(many=True).dump(cards).data
     return jsonify(cards)
 
+
 @application.route('/api/transactions', methods=['GET'])
 def transactions():
     transactions = Transaction.query.limit(100).all()
     transactions = TransactionSchema(many=True).dump(transactions).data
     return jsonify(transactions)
+
+
+@application.route('/api/schools', methods=['GET'])
+def schools():
+    schools = School.query.limit(100).all()
+    schools = SchoolSchema(many=True).dump(schools).data
+    return jsonify(schools)
+
+
+@application.route('/api/schools/<school_name>', methods=['GET'])
+def school(school_name):
+    school = School.query.filter_by(name=school_name).first()
+    return SchoolSchemaLite().jsonify(school)
 
 
 if __name__ == '__main__':

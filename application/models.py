@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_marshmallow import Marshmallow
+from marshmallow_sqlalchemy import fields
 
 from application import application, db
 
@@ -36,13 +37,9 @@ class CardSchema(ma.ModelSchema):
         model = Card
 
 
-class School(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), index=True, unique=False)
-    created_date = db.Column(db.DateTime, nullable=False,
-                             default=datetime.utcnow)
-    status = db.Column(db.String(10), unique=False)
-    students = db.relationship('User', backref='school')
+class CardSchemaLite(ma.ModelSchema):
+    class Meta:
+        fields = ('number', 'status')
 
 
 class User(db.Model):
@@ -59,3 +56,30 @@ class User(db.Model):
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = User
+
+
+class UserSchemaLite(ma.ModelSchema):
+    class Meta:
+        fields = ('id', 'name', 'balance', 'cards')
+    cards = ma.Nested(CardSchemaLite, many=True, allow_null=True, default=tuple())
+
+
+class School(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), index=True, unique=False)
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    status = db.Column(db.String(10), unique=False)
+    students = db.relationship('User')
+
+
+class SchoolSchema(ma.ModelSchema):
+    class Meta:
+        model = School
+
+
+class SchoolSchemaLite(ma.ModelSchema):
+    class Meta:
+        fields = ('id', 'name', 'students')
+
+    students = ma.Nested(UserSchemaLite, many=True, allow_null=True, default=tuple())
