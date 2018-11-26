@@ -70,7 +70,7 @@ class School(db.Model):
     created_date = db.Column(db.DateTime, nullable=False,
                              default=datetime.utcnow)
     status = db.Column(db.String(10), unique=False)
-    students = db.relationship('User')
+    students = db.relationship('User', backref='school')
 
 
 class SchoolSchema(ma.ModelSchema):
