@@ -47,7 +47,7 @@ class EmailParser:
 
         return email_body
 
-    def topups_from_email(self):
+    def get_topups(self):
         valid_topups = []
         email_body = self.get_unseen_email()
         if email_body is not None:
@@ -87,7 +87,7 @@ class EmailParser:
 
 if __name__ == '__main__':
     email_parser = EmailParser()
-    topups = email_parser.topups_from_email()
+    topups = email_parser.get_topups()
 
     print('There are ' + str(len(topups)) + ' topups')
 

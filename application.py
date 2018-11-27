@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from Emailparser import EmailParser
+from Topup import Topup
 from application import db, application
 from application.models import Card, User, UserSchema, School, CardSchema, Transaction, TransactionSchema, SchoolSchema, \
     SchoolSchemaLite
@@ -76,6 +78,53 @@ def school(school_name):
     school = School.query.filter_by(name=school_name).first()
     return SchoolSchemaLite().jsonify(school)
 
+@application.route('/api/topup/refresh', methods=['GET'])
+def refresh_topups():
+
+    topups = EmailParser().get_topups()
+
+    topup_1 = Topup("5555444433332000", "100.00", "12/20", "Noor", "KHSS" )
+    topup_2 = Topup("5555444433332001", "100.00", "12/20", "Muhammad Ali", "Darcy Road School" )
+    topup_3 = Topup("5555444433332002", "100.00", "12/20", "Muhammad Ali", "KHSS" )
+
+    #topups = [topup_1, topup_2, topup_3]
+
+    for topup in topups:
+        school = None
+        user = None
+        card = None
+        school = School.query.filter_by(name=topup.school_name).first()
+        if school is not None:
+            user = User.query.filter_by(name=topup.customer_name, school=school).first()
+            if user is not None:
+                card = Card.query.filter_by(number=topup.card_num).first()
+                if card is None:
+                    card = Card(number=topup.card_num, expiry_date=topup.card_expiry_date, owner_id=user.id)
+                    db.session.add(card)
+                    db.session.commit()
+
+                user.balance = user.balance + Decimal(topup.amount.replace(',', '.'))
+                db.session.add(user)
+                db.session.commit()
+            else:
+                user = User(name=topup.customer_name, school=school, balance=topup.amount)
+                db.session.add(user)
+                db.session.commit()
+                card = Card(number=topup.card_num, expiry_date=topup.card_expiry_date, owner_id=user.id)
+                db.session.add(card)
+                db.session.commit()
+        else:
+            school = School(name=topup.school_name)
+            db.session.add(school)
+            db.session.commit()
+            user = User(name=topup.customer_name, school=school, balance=topup.amount)
+            db.session.add(user)
+            db.session.commit()
+            card = Card(number=topup.card_num, expiry_date=topup.card_expiry_date, owner_id=user.id)
+            db.session.add(card)
+            db.session.commit()
+
+    return jsonify(status="Success", error=None)
 
 if __name__ == '__main__':
     application.run(host='charopy-local', port=5001, debug=True)

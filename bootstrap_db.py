@@ -41,7 +41,8 @@ card1 = Card(number='5555444433332222', expiry_date='1219', owner_id=muhammad_al
 card2 = Card(number='5555444433331111', expiry_date='1219', owner_id=dwij.id)
 card3 = Card(number='5555444433330000', expiry_date='1219', owner_id=akul.id)
 card4 = Card(number='555544443333333', expiry_date='1219', owner_id=muhammad_ali.id)
-db.session.add_all([card1, card2, card3, card4])
+card5 = Card(number='5520380017081205', expiry_date='1219', owner_id=muhammad_ali.id)
+db.session.add_all([card1, card2, card3, card4, card5])
 db.session.commit()
 
 add_balance_transaction_1=Transaction(card_num=card1.number, type='ADD_BALANCE', amount=500.00, status='APPROVED')
