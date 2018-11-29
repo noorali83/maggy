@@ -30,25 +30,25 @@ db.session.add(dwij)
 db.session.commit()
 
 # update school association of a user
-toongabie_school=School.query.filter_by(name='Toongabie School').first()
+toongabie_school = School.query.filter_by(name='Toongabie School').first()
 akul=User.query.filter_by(name='Akul').first()
 akul.school_id = toongabie_school.id
 db.session.add(akul)
 db.session.commit()
 
 # create cards
-card1 = Card(number='5555444433332222', expiry_date='1219', owner_id=muhammad_ali.id)
-card2 = Card(number='5555444433331111', expiry_date='1219', owner_id=dwij.id)
-card3 = Card(number='5555444433330000', expiry_date='1219', owner_id=akul.id)
-card4 = Card(number='555544443333333', expiry_date='1219', owner_id=muhammad_ali.id)
-card5 = Card(number='5520380017081205', expiry_date='1219', owner_id=muhammad_ali.id)
+card1 = Card(number='55554444333322', expiry_date='1219', owner_id=muhammad_ali.id)
+card2 = Card(number='55554444333311', expiry_date='1219', owner_id=dwij.id)
+card3 = Card(number='55554444333300', expiry_date='1219', owner_id=akul.id)
+card4 = Card(number='55554444333333', expiry_date='1219', owner_id=muhammad_ali.id)
+card5 = Card(number='55203800170812', expiry_date='1219', owner_id=muhammad_ali.id)
 db.session.add_all([card1, card2, card3, card4, card5])
 db.session.commit()
 
-add_balance_transaction_1=Transaction(card_num=card1.number, type='ADD_BALANCE', amount=500.00, status='APPROVED')
-add_balance_transaction_2=Transaction(card_num=card2.number, type='ADD_BALANCE', amount=100.00, status='APPROVED')
-add_balance_transaction_3=Transaction(card_num=card3.number, type='ADD_BALANCE', amount=50.50, status='APPROVED')
-check_balance_transaction=Transaction(card_num=card3.number, type='CHECK_BALANCE', status='APPROVED')
+add_balance_transaction_1 = Transaction(card_num=card1.number, type='ADD_BALANCE', amount=500.00, status='APPROVED')
+add_balance_transaction_2 = Transaction(card_num=card2.number, type='ADD_BALANCE', amount=100.00, status='APPROVED')
+add_balance_transaction_3 = Transaction(card_num=card3.number, type='ADD_BALANCE', amount=50.50, status='APPROVED')
+check_balance_transaction = Transaction(card_num=card3.number, type='CHECK_BALANCE', status='APPROVED')
 
 #db.session.add(add_balance_transaction_1)
 #db.session.add(add_balance_transaction_2)
