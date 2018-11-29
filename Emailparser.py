@@ -13,6 +13,8 @@ def parse_card_details_from(card_details_text):
     card_details = card_details.lstrip('"')
     card_num, expiry_date = card_details.split('.')
     card_num = re.sub("\D", "", card_num)
+    if card_num.__len__() > 14:
+        card_num = card_num[:14]
     return card_num, expiry_date
 
 
@@ -62,6 +64,7 @@ class EmailParser:
                     customer_name = self.getcustomername(line)
                 elif 'The following item has just been purchased from' in line:
                     school_name = self.getschoolname(line)
+                    school_name = school_name.replace(' using', '').strip()
                 elif 'Note:' in line:
                     card_num, expiry_date = parse_card_details_from(line)
                     topup.card_num = card_num
