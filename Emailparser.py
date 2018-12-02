@@ -59,34 +59,6 @@ class EmailParser:
 
         return new_emails
 
-    def get_topups(self):
-        valid_topups = []
-        new_emails = self.get_unseen_emails()
-        if new_emails is not None and new_emails.__len__() > 0:
-            for new_email in new_emails:
-                price = None
-                customer_name = None
-                school_name = None
-                for line in new_email.splitlines():
-                    topup = Topup(None, None, None)
-                    if 'Price:' in line:
-                        price = self.getprice(line)
-                    elif 'Beneficiary:' in line:
-                        customer_name = self.value_from(line).strip()
-                    elif 'The following item has just been purchased from' in line:
-                        school_name = self.getschoolname(line)
-                        school_name = school_name.replace(' using', '').strip()
-                    elif 'Note:' in line:
-                        card_num, expiry_date = parse_card_details_from(line)
-                        topup.card_num = card_num
-                        topup.amount = price
-                        topup.customer_name = customer_name
-                        topup.school_name = school_name
-                        topup.card_expiry_date = expiry_date
-                        valid_topups.append(topup)
-
-        return valid_topups
-
     def get_topups_from_email(self):
         valid_topups = []
         new_emails = self.get_unseen_emails()
@@ -112,7 +84,7 @@ class EmailParser:
                         elif 'Price:' in line:
                             topup.amount = self.getprice(line)
                         elif 'Beneficiary:' in line:
-                            customer_name = self.value_from(line)
+                            customer_name = self.value_from(line).strip()
                             topup.customer_name = customer_name
                         elif 'The following item has just been purchased from' in line:
                             school_name = self.getschoolname(line)
