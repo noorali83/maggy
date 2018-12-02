@@ -81,9 +81,9 @@ def school(school_name):
 @application.route('/api/topup/refresh', methods=['GET'])
 def refresh_topups():
 
-    topups = EmailParser().get_topups()
+    topups = EmailParser().get_topups_from_email()
 
-    topup_1 = Topup("5555444433332000", "100.00", "12/20", "Noor", "KHSS" )
+    topup_1 = Topup(None, "100.00", "12/20", "Noor", "KHSS" )
     topup_2 = Topup("5555444433332001", "100.00", "12/20", "Muhammad Ali", "Darcy Road School" )
     topup_3 = Topup("5555444433332002", "100.00", "12/20", "Muhammad Ali", "KHSS" )
 
@@ -97,11 +97,12 @@ def refresh_topups():
         if school is not None:
             user = User.query.filter_by(name=topup.customer_name, school=school).first()
             if user is not None:
-                card = Card.query.filter_by(number=topup.card_num).first()
-                if card is None:
-                    card = Card(number=topup.card_num, expiry_date=topup.card_expiry_date, owner_id=user.id)
-                    db.session.add(card)
-                    db.session.commit()
+                if topup.card_num is not None:
+                    card = Card.query.filter_by(number=topup.card_num).first()
+                    if card is None:
+                        card = Card(number=topup.card_num, expiry_date=topup.card_expiry_date, owner_id=user.id)
+                        db.session.add(card)
+                        db.session.commit()
 
                 user.balance = user.balance + Decimal(topup.amount.replace(',', '.'))
                 db.session.add(user)

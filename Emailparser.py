@@ -11,7 +11,15 @@ def parse_card_details_from(card_details_text):
     text, card_details = card_details_text.split(":")
     card_details = card_details.rstrip('"')
     card_details = card_details.lstrip('"')
-    card_num, expiry_date = card_details.split('.')
+    card_num = None
+    expiry_date = None
+    if '.' in card_details:
+        c_number, c_expiryDate = card_details.split('.')
+        card_num = c_number
+        expiry_date = c_expiryDate
+    else:
+        card_num = card_details
+
     card_num = re.sub("\D", "", card_num)
     if card_num.__len__() > 14:
         card_num = card_num[:14]
@@ -19,7 +27,6 @@ def parse_card_details_from(card_details_text):
 
 
 class EmailParser:
-
     def get_unseen_email(self):
         email_body = None
         mail = imaplib.IMAP4_SSL('imap.gmail.com')
@@ -60,8 +67,8 @@ class EmailParser:
                 topup = Topup(None, None, None)
                 if 'Price:' in line:
                     price = self.getprice(line)
-                elif 'Customer Name' in line:
-                    customer_name = self.getcustomername(line)
+                elif 'Beneficiary:' in line:
+                    customer_name = self.value_from(line)
                 elif 'The following item has just been purchased from' in line:
                     school_name = self.getschoolname(line)
                     school_name = school_name.replace(' using', '').strip()
@@ -75,13 +82,50 @@ class EmailParser:
                     valid_topups.append(topup)
         return valid_topups
 
+    def get_topups_from_email(self):
+        valid_topups = []
+        email_body = self.get_unseen_email()
+        if email_body is not None:
+            price = None
+            customer_name = None
+            school_name = None
+            product_name = None
+            topup = None
+            for line in email_body.splitlines():
+                if '-------------------' in line:
+                    if topup is not None:
+                        if product_name is not None and 'Top Up' in product_name:
+                            topup.school_name = school_name
+                            valid_topups.append(topup)
+                            topup = Topup(None, None, None)
+                    else:
+                        topup = Topup(None, None, None)
+                elif 'Product Name:' in line:
+                    product_name = self.value_from(line)
+                elif 'Price:' in line:
+                    topup.amount = self.getprice(line)
+                elif 'Beneficiary:' in line:
+                    customer_name = self.value_from(line)
+                    topup.customer_name = customer_name
+                elif 'The following item has just been purchased from' in line:
+                    school_name = self.getschoolname(line)
+                    school_name = school_name.replace(' using', '').strip()
+                elif 'Note:' in line:
+                    card_num, expiry_date = parse_card_details_from(line)
+                    if card_num is not None:
+                        topup.card_num = card_num
+                    if expiry_date is not None:
+                        topup.card_expiry_date = expiry_date
+
+        return valid_topups
+
     def getprice(self, line):
         text, amount = line.split(":")
         return amount.partition("$")[2]
 
-    def getcustomername(self, line):
-        text, user_name = line.split(":")
-        return user_name
+    def value_from(self, line):
+        label, value = line.split(":")
+        return value
 
     def getschoolname(self, line):
         schoolname = line.partition('The following item has just been purchased from')[2]
@@ -90,7 +134,7 @@ class EmailParser:
 
 if __name__ == '__main__':
     email_parser = EmailParser()
-    topups = email_parser.get_topups()
+    topups = email_parser.get_topups_from_email()
 
     print('There are ' + str(len(topups)) + ' topups')
 
@@ -98,7 +142,6 @@ if __name__ == '__main__':
         topup = topups[x]
         print('----------------------')
         print('CardNum ' + topup.card_num)
-        print('Expiry Date ' + topup.card_expiry_date)
         print('Amount ' + topup.amount)
         print('School ' + topup.school_name)
         print('customer_name ' + topup.customer_name)
