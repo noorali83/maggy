@@ -30,7 +30,7 @@ class EmailParser:
     def get_unseen_email(self):
         email_body = None
         mail = imaplib.IMAP4_SSL('imap.gmail.com')
-        mail.login('nooralitestapp@gmail.com', 'EnUlagam2415*')
+        mail.login('qkrtoppingup@gmail.com', 'canteen99')
         mail.list()
         mail.select("INBOX")  # connect to inbox.
 

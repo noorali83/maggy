@@ -125,7 +125,7 @@ def refresh_topups():
             db.session.add(card)
             db.session.commit()
 
-    return jsonify(status="Success", error=None)
+    return jsonify(status= str(topups.__len__()) + " topups added" , error=None)
 
 if __name__ == '__main__':
     application.run(host='charopy-local', port=5001, debug=True)
