@@ -72,7 +72,7 @@ class EmailParser:
                     if 'Price:' in line:
                         price = self.getprice(line)
                     elif 'Beneficiary:' in line:
-                        customer_name = self.value_from(line)
+                        customer_name = self.value_from(line).strip()
                     elif 'The following item has just been purchased from' in line:
                         school_name = self.getschoolname(line)
                         school_name = school_name.replace(' using', '').strip()

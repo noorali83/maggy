@@ -37,7 +37,7 @@ db.session.add(akul)
 db.session.commit()
 
 # create cards
-apple_pay = Card(number='4419668971018', expiry_date='1219', owner_id=muhammad_ali.id)
+apple_pay = Card(number='44196689710181', expiry_date='1219', owner_id=muhammad_ali.id)
 twentyeight_degree_card = Card(number='54443453022605', expiry_date='1219', owner_id=muhammad_ali.id)
 hsbc_card = Card(number='45859400111426', expiry_date='1219', owner_id=muhammad_ali.id)
 card2 = Card(number='55554444333311', expiry_date='1219', owner_id=dwij.id)
