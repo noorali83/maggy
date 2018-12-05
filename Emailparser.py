@@ -120,6 +120,9 @@ class EmailParser:
 
     def getschoolname(self, line):
         schoolname = line.partition('The following item has just been purchased from')[2]
+        if ' using Qkr!' in schoolname:
+            parsed_school_name, discard_text = schoolname.split(" using Qkr!")
+            schoolname = parsed_school_name
         return schoolname
 
     def remove_html_markup(self, s):
