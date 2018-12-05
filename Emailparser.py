@@ -50,7 +50,7 @@ class EmailParser:
                 email_message = email.message_from_bytes(raw_email)
 
                 for part in email_message.walk():
-                    if part.get_content_type() == "text/plain":
+                    if part.get_content_type() == "text/html":
                         email_body = part.get_payload(decode=True)
                         email_body = email_body.decode('utf-8')
                     else:
@@ -71,6 +71,7 @@ class EmailParser:
                     product_name = None
                     topup = None
                     for line in new_email.splitlines():
+                        line = self.remove_html_markup(line)
                         if '-------------------' in line:
                             if topup is not None:
                                 if product_name is not None and 'Top Up' in product_name:
@@ -81,8 +82,12 @@ class EmailParser:
                                 topup = Topup(None, None, None)
                         elif 'Product Name:' in line:
                             product_name = self.value_from(line)
-                        elif 'Price:' in line:
-                            topup.amount = self.getprice(line)
+                        elif 'Price:' in line and 'Total price' not in line:
+                            amount = self.getprice(line)
+                            if topup is None:
+                                topup = Topup(None, None, None)
+                                topup.amount = amount
+
                         elif 'Beneficiary:' in line:
                             customer_name = self.value_from(line).strip()
                             topup.customer_name = customer_name
@@ -95,6 +100,13 @@ class EmailParser:
                                 topup.card_num = card_num
                             if expiry_date is not None:
                                 topup.card_expiry_date = expiry_date
+
+                    if topup is not None:
+                        if product_name is not None and school_name is not None and 'Top Up' in product_name:
+                            topup.school_name = school_name
+                            valid_topups.append(topup)
+                            topup = Topup(None, None, None)
+
 
         return valid_topups
 
@@ -109,6 +121,23 @@ class EmailParser:
     def getschoolname(self, line):
         schoolname = line.partition('The following item has just been purchased from')[2]
         return schoolname
+
+    def remove_html_markup(self, s):
+        tag = False
+        quote = False
+        out = ""
+
+        for c in s:
+            if c == '<' and not quote:
+                tag = True
+            elif c == '>' and not quote:
+                tag = False
+            elif (c == '"' or c == "'") and tag:
+                quote = not quote
+            elif not tag:
+                out = out + c
+
+        return out
 
 
 if __name__ == '__main__':
