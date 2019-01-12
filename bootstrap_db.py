@@ -19,8 +19,8 @@ db.session.add(toongabie_school)
 
 
 # create users and associate schools
-muhammad_ali = User(name='Suzy Chase', school=qkr_training_school, balance = 1000.00)
-akul = User(name='Akul', school=qkr_training_school, balance = 1000.00)
+muhammad_ali = User(name='Suzy Chase', school=qkr_training_school, balance = 100.00)
+akul = User(name='Akul', school=qkr_training_school, balance = 100.00)
 dwij = User(name='Dwij', school=westmead_school, balance = 100.00)
 
 db.session.add(muhammad_ali)
@@ -39,12 +39,14 @@ db.session.commit()
 # create cards
 apple_pay = Card(number='44196689710181', expiry_date='1219', owner_id=muhammad_ali.id)
 twentyeight_degree_card = Card(number='54443453022605', expiry_date='1219', owner_id=muhammad_ali.id)
-hsbc_card = Card(number='45859400111426', expiry_date='1219', owner_id=muhammad_ali.id)
+hsbc_card = Card(number='45859400111425', expiry_date='1219', owner_id=muhammad_ali.id)
 card2 = Card(number='55554444333311', expiry_date='1219', owner_id=dwij.id)
 card3 = Card(number='55554444333300', expiry_date='1219', owner_id=akul.id)
 card4 = Card(number='55554444333333', expiry_date='1219', owner_id=muhammad_ali.id)
 card5 = Card(number='55203800170812', expiry_date='1219', owner_id=muhammad_ali.id)
-db.session.add_all([apple_pay, twentyeight_degree_card, hsbc_card, card2, card3, card4, card5])
+card6 = Card(number='047FFFFFFFA40A275EFF', expiry_date='1219', owner_id=muhammad_ali.id)
+card7 = Card(number='04FFFFFFFDFFFFFFA50A', expiry_date='1219', owner_id=muhammad_ali.id)
+db.session.add_all([apple_pay, twentyeight_degree_card, hsbc_card, card2, card3, card4, card5, card6, card7])
 db.session.commit()
 
 add_balance_transaction_1 = Transaction(card_num=apple_pay.number, type='ADD_BALANCE', amount=500.00, status='APPROVED')

@@ -9,7 +9,7 @@ ma = Marshmallow(application)
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    card_num = db.Column(db.String(20), db.ForeignKey('card.number'), index=True, unique=False)
+    card_num = db.Column(db.String(200), db.ForeignKey('card.number'), index=True, unique=False)
     created_date = db.Column(db.DateTime, nullable=False,
                              default=datetime.utcnow)
     status = db.Column(db.String(10), unique=False)
@@ -23,7 +23,7 @@ class TransactionSchema(ma.ModelSchema):
 
 
 class Card(db.Model):
-    number = db.Column(db.String(20), index=True, primary_key=True)
+    number = db.Column(db.String(200), index=True, primary_key=True)
     expiry_date = db.Column(db.String(20), unique=False)
     created_date = db.Column(db.DateTime, nullable=False,
                              default=datetime.utcnow)
