@@ -45,6 +45,38 @@ def checkout():
     return jsonify(status=status, error=error)
 
 
+@application.route('/api/add-value', methods=['POST'])
+def add_value():
+    req_data = request.get_json()
+
+    cardNumber = req_data['cardNumber']
+    amount = req_data['amount']
+    amount_in_decimal = Decimal(amount.replace(',', '.'))
+    card = Card.query.filter_by(number=cardNumber).first()
+
+    error = None
+    status = None
+
+    if card is not None:
+        student_id = card.owner_id
+        card_owner = User.query.filter_by(id=student_id).first()
+        if card_owner is None:
+            status = 'Declined'
+            error = 'Card not associated to any user'
+        else:
+            card_owner.balance = card_owner.balance + amount_in_decimal
+            redeem_txn = Transaction(card_num=card.number, type='EARN', amount=amount_in_decimal,
+                                     status='APPROVED')
+            db.session.add(redeem_txn)
+            db.session.commit()
+            status = 'Approved'
+    else:
+        error = 'Card not found'
+        status = 'Declined'
+
+    return jsonify(status=status, error=error)
+
+
 @application.route('/api/users', methods=['GET'])
 def users():
     users = User.query.order_by(User.id.desc()).limit(100).all()
@@ -78,16 +110,16 @@ def school(school_name):
     school = School.query.filter_by(name=school_name).first()
     return SchoolSchemaLite().jsonify(school)
 
+
 @application.route('/api/topup/refresh', methods=['GET'])
 def refresh_topups():
-
     topups = EmailParser().get_topups_from_email()
 
-    topup_1 = Topup(None, "100.00", "12/20", "Noor", "KHSS" )
-    topup_2 = Topup("5555444433332001", "100.00", "12/20", "Muhammad Ali", "Darcy Road School" )
-    topup_3 = Topup("5555444433332002", "100.00", "12/20", "Muhammad Ali", "KHSS" )
+    topup_1 = Topup(None, "100.00", "12/20", "Noor", "KHSS")
+    topup_2 = Topup("5555444433332001", "100.00", "12/20", "Muhammad Ali", "Darcy Road School")
+    topup_3 = Topup("5555444433332002", "100.00", "12/20", "Muhammad Ali", "KHSS")
 
-    #topups = [topup_1, topup_2, topup_3]
+    # topups = [topup_1, topup_2, topup_3]
 
     for topup in topups:
         school = None
@@ -125,7 +157,8 @@ def refresh_topups():
             db.session.add(card)
             db.session.commit()
 
-    return jsonify(status= str(topups.__len__()) + " topups added" , error=None)
+    return jsonify(status=str(topups.__len__()) + " topups added", error=None)
+
 
 if __name__ == '__main__':
     application.run(host='charopy-local', port=5001, debug=True)
